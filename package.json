@@ -1,25 +1,37 @@
 {
-  "name": "tele2-ats2-sdk",
-  "version": "0.0.1",
-  "description": "",
+  "name": "@op-web-code/tele2-ats2-sdk",
+  "version": "0.0.10",
   "main": "index.js",
+  "types": "index.d.ts",
   "keywords": [],
-  "author": "",
+  "author": "https://github.com/op-web-code",
   "license": "ISC",
+  "scripts": {
+    "gen-types": "npx -p typescript tsc ./typepoint.js --declaration --allowJs --emitDeclarationOnly --outDir types"
+  },
   "dependencies": {
-    "@types/node": "^20.14.0",
     "axios": "^1.7.2"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/op-web-code/tele2-ats2-sdk"
+    "url": "git+https://github.com/op-web-code/tele2-ats2-sdk.git"
   },
   "homepage": "https://github.com/op-web-code/tele2-ats2-sdk/blob/main/README.md",
   "files": [
     "index.js",
     "api.js",
     "client.js",
-    "tele2-ats2-api/",
-    "tele2-ats2-client/"
-  ]
+    "src/",
+    "index.d.ts",
+    "api.d.ts",
+    "client.d.ts",
+    "types/"
+  ],
+  "bugs": {
+    "url": "https://github.com/op-web-code/tele2-ats2-sdk/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0"
+  },
+  "description": "Не официальная обёртка над апи tele2ats2"
 }
