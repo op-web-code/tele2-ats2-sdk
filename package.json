@@ -10,6 +10,11 @@
     "@types/node": "^20.14.0",
     "axios": "^1.7.2"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/op-web-code/tele2-ats2-sdk"
+  },
+  "homepage": "https://github.com/op-web-code/tele2-ats2-sdk/blob/main/README.md",
   "files": [
     "index.js",
     "api.js",
