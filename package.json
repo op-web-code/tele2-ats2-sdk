@@ -1,0 +1,20 @@
+{
+  "name": "tele2-ats2-sdk",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^20.14.0",
+    "axios": "^1.7.2"
+  },
+  "files": [
+    "index.js",
+    "api.js",
+    "client.js",
+    "tele2-ats2-api/",
+    "tele2-ats2-client/"
+  ]
+}
