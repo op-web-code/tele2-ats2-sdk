@@ -137,7 +137,7 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
-   * @returns { Promise<import('./types').Employee[]> }
+   * @returns { Promise<import('../../types').Employee[]> }
    */
   async employees() {
     return this.callApiMethod((accessToken) =>
@@ -146,7 +146,7 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
-   * @returns { Promise<import('./types').MonitoringCall[]> }
+   * @returns { Promise<import('../../types').MonitoringCall[]> }
    */
   async monitoringCalls() {
     return this.callApiMethod((accessToken) =>
@@ -155,7 +155,7 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
-   * @returns { Promise<import('./types').MonitoringCallPending[]> }
+   * @returns { Promise<import('../../types').MonitoringCallPending[]> }
    */
   async monitoringCallsPending() {
     return this.callApiMethod((accessToken) =>
