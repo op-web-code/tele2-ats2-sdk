@@ -175,6 +175,7 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
 
   /**
    * @param { Omit<Parameters<import('../tele2-ats2-api')['callRecordsInfo']>[0], 'accessToken' | 'sort'> & { sort?: { key: 'date' | 'callTimestamp' | 'callType' | 'destinationNumber' | 'callerNumber' | 'callerName' | 'calleeNumber' | 'calleeName' | 'callDuration' | 'callStatus' | 'recordFileName', order: 'asc' | 'desc' } } } props
+   * @returns { Promise<import('../../types').FileInfo[]> }
    */
   async callRecordsInfo(props) {
     return this.callApiMethod((accessToken) =>

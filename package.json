@@ -1,18 +1,17 @@
 {
   "name": "@op-web-code/tele2-ats2-sdk",
-  "version": "0.0.11",
+  "version": "0.0.14",
   "main": "index.js",
   "types": "index.d.ts",
   "keywords": [],
   "author": "https://github.com/op-web-code",
   "license": "ISC",
   "scripts": {
-    "gen-types": "rimraf ./types && npx -p typescript tsc ./typepoint.js --declaration --allowJs --emitDeclarationOnly --outDir types",
+    "gen-types": "rimraf ./types && npx -p typescript tsc ./typepoint.js --declaration --allowJs --emitDeclarationOnly --outDir types && cp ./types.d.ts ./types/types.d.ts",
     "publish": "npm run gen-types && npm publish --access=public"
   },
   "dependencies": {
-    "axios": "^1.7.2",
-    "rimraf": "^5.0.7"
+    "axios": "^1.7.2"
   },
   "repository": {
     "type": "git",
@@ -27,14 +26,14 @@
     "index.d.ts",
     "api.d.ts",
     "client.d.ts",
-    "types.d.ts",
     "types/"
   ],
   "bugs": {
     "url": "https://github.com/op-web-code/tele2-ats2-sdk/issues"
   },
   "devDependencies": {
-    "@types/node": "^20.14.0"
+    "@types/node": "^20.14.0",
+    "rimraf": "^5.0.7"
   },
   "description": "Не официальная обёртка над апи tele2ats2"
 }

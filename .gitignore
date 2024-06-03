@@ -1,6 +1,6 @@
 node_modules
 types
 
-main.test.js
-
+*.test.js
+*.mp3
 *.token.json

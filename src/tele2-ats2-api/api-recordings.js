@@ -74,6 +74,7 @@ const callRecordsInfo = async (props) => {
       return {
         ...item,
         recordFileUri: url.toString(),
+        date: new Date(item.date),
       };
     }
 
