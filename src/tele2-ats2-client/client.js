@@ -184,8 +184,7 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
-   * @param { object } props
-   * @param { Omit<Parameters<import('../tele2-ats2-api')['click2call']>[0], 'callRecordsFile'> } props
+   * @param { Omit<Parameters<import('../tele2-ats2-api')['callRecordsFile']>[0], 'accessToken'> } props
    * @returns { Promise<import('../tele2-ats2-api/file')> }
    */
   async callRecordsFile(props) {
