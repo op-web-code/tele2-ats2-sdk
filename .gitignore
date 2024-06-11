@@ -1,6 +1,9 @@
 node_modules
 types
+tmp
 
 *.test.js
 *.mp3
 *.token.json
+*.script.sh
+*.log

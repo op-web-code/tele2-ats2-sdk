@@ -1,8 +1,15 @@
 class AbstractTokenStore {
   /**
-   * @returns { Promise<{ accessToken?: string, refreshToken: string }> }
+   * @returns { Promise<{ accessToken?: string }> }
    */
-  async loadTokens() {
+  async loadAccessToken() {
+    throw new Error("AbstractTokenStore.loadAccessToken");
+  }
+
+  /**
+   * @returns { Promise<{ refreshToken: string }> }
+   */
+  async loadRefreshToken() {
     throw new Error("AbstractTokenStore.loadRefreshToken");
   }
 

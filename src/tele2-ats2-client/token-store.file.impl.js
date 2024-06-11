@@ -22,17 +22,30 @@ class FileTokenStore extends AbstractTokenStore {
   /**
    * @returns { Promise<{ accessToken?: string, refreshToken: string }>}
    */
-  async loadTokens() {
+  async loadAccessToken() {
+    const content = await fs.readFile(this.#filename, "utf8");
+    const { accessToken, startRefreshToken } = JSON.parse(content);
+
+    if (this.#refreshToken && startRefreshToken !== this.#refreshToken) {
+      return { accessToken: null };
+    }
+
+    return { accessToken };
+  }
+
+  /**
+   * @returns { Promise<{ accessToken?: string, refreshToken: string }>}
+   */
+  async loadRefreshToken() {
     try {
       const content = await fs.readFile(this.#filename, "utf8");
-      const { accessToken, refreshToken, startRefreshToken } =
-        JSON.parse(content);
+      const { refreshToken, startRefreshToken } = JSON.parse(content);
 
       if (this.#refreshToken && startRefreshToken !== this.#refreshToken) {
         return { refreshToken: this.#refreshToken };
       }
 
-      return { accessToken, refreshToken };
+      return { refreshToken };
     } catch (error) {
       if (error?.code !== "ENOENT") {
         throw error;

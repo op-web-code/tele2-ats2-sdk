@@ -13,7 +13,6 @@ const DEFAULTS_DECORATORS = [
   },
   {
     code: 500,
-    details: "Tele2 Server Error",
     exception: Exceptions.Tele2Ats2ApiServerError,
   },
 ];
@@ -29,7 +28,7 @@ const DEFAULTS_DECORATORS = [
  * @param { string } [props.callee]
  * @param { string } [props.caller]
  * @param { boolean } [props.hasRecorded]
- * @returns { Promise<void> }
+ * @returns { Promise<Record<string, any>[]> }
  */
 const callRecordsInfo = async (props) => {
   const url = new URL(`${Constants.TELE2APIHOST}/call-records/info`);

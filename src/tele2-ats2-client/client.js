@@ -27,7 +27,7 @@ class Tele2Ats2ClientAuth {
       return this.#tokenStoreAccessToken;
     }
 
-    const { accessToken } = await this.#tokenStore.loadTokens();
+    const { accessToken } = await this.#tokenStore.loadAccessToken();
     if (accessToken) {
       this.#tokenStoreAccessToken = accessToken;
       return accessToken;
@@ -53,7 +53,7 @@ class Tele2Ats2ClientAuth {
 
   /** @returns { Promise<string> } */
   async #strategyAuth() {
-    const { refreshToken } = await this.#tokenStore.loadTokens();
+    const { refreshToken } = await this.#tokenStore.loadRefreshToken();
 
     const firstTryAuth = await tele2ats2api
       .refreshTokens({
@@ -71,7 +71,7 @@ class Tele2Ats2ClientAuth {
 
     for (const delay of this.#attempts) {
       await this.#sleep(delay);
-      const { accessToken } = await this.#tokenStore.loadTokens();
+      const { accessToken } = await this.#tokenStore.loadAccessToken();
 
       if (accessToken) {
         this.#tokenStoreAccessToken = accessToken;

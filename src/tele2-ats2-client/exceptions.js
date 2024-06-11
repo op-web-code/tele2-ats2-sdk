@@ -22,5 +22,4 @@ class Tele2Ats2ClientLossTruthTokenError extends Tele2Ats2ClientError {}
 module.exports = {
   Tele2Ats2ClientError,
   Tele2Ats2ClientLossTruthTokenError,
-  Tele2Ats2ServerError,
 };
