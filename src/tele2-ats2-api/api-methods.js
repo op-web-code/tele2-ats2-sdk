@@ -10,6 +10,11 @@ const DEFAULTS_DECORATORS = [
     details: "The token has already been updated",
     exception: Exceptions.Tele2Ats2ApiUnauthorizedError,
   },
+  {
+    code: 500,
+    details: "Tele2 Server Error",
+    exception: Exceptions.Tele2Ats2ApiServerError,
+  },
 ];
 
 /**
