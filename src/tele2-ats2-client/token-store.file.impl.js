@@ -3,6 +3,9 @@ const fs = require("fs/promises");
 
 const DEFAULT_FILENAME = ".tele2ats2.token.json";
 
+/**
+ * Хранит токены файлы (хорошо для монолита)
+ */
 class FileTokenStore extends AbstractTokenStore {
   #filename;
   #refreshToken;

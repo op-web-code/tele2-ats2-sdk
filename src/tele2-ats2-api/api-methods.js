@@ -17,6 +17,10 @@ const DEFAULTS_DECORATORS = [
 ];
 
 /**
+ * Обновление токена
+ *
+ * @see https://ats2-wiki.tele2.ru/open_api/#_4
+ *
  * @param { object } props
  * @param { string } props.refreshToken
  * @returns { Promise<{ accessToken: string, refreshToken: string }> }
@@ -38,6 +42,10 @@ const refreshTokens = async (props) => {
 };
 
 /**
+ * Получение информации о текущих звонках
+ *
+ * @see https://ats2-wiki.tele2.ru/open_api/#_5
+ *
  * @param { object } props
  * @param { string } props.accessToken
  * @returns { Promise<Record<string, any>> }
@@ -55,6 +63,10 @@ const monitoringCalls = async (props) => {
 };
 
 /**
+ * Получение списка абонентов в очереди
+ *
+ * @see https://ats2-wiki.tele2.ru/open_api/#_6
+ *
  * @param { object } props
  * @param { string } props.accessToken
  * @returns { Promise<Record<string, any>> }
@@ -72,6 +84,10 @@ const monitoringCallsPending = async (props) => {
 };
 
 /**
+ * Получение списка сотрудников компании
+ *
+ * @see https://ats2-wiki.tele2.ru/open_api/#_7
+ *
  * @param { object } props
  * @param { string } props.accessToken
  * @returns { Promise<Record<string, any>> }
@@ -89,6 +105,10 @@ const employees = async (props) => {
 };
 
 /**
+ * Сlick 2 call (вызов через АТС)
+ *
+ * @see https://ats2-wiki.tele2.ru/open_api/#lick-2-call
+ *
  * @param { object } props
  * @param { string } props.accessToken
  * @param { string } props.employeePhone

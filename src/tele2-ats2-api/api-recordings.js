@@ -18,6 +18,10 @@ const DEFAULTS_DECORATORS = [
 ];
 
 /**
+ * Получение списка записей разговоров
+ *
+ * @see https://ats2-wiki.tele2.ru/open_api/#_13
+ *
  * @param { object } props
  * @param { string } props.accessToken
  * @param { Date } props.dateFrom
@@ -87,6 +91,10 @@ const callRecordsInfo = async (props) => {
 };
 
 /**
+ * Получение файла записи разговора
+ *
+ * @see https://ats2-wiki.tele2.ru/open_api/#_14
+ *
  * @param { object } props
  * @param { string } props.accessToken
  * @param { string } props.recordFileName

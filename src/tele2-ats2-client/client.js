@@ -22,6 +22,13 @@ class Tele2Ats2ClientAuth {
     this.#attempts = props.strategyConfig?.attempts || [1000, 3000, 5000];
   }
 
+  /**
+   * Загрузить accessToken
+   *
+   * 1. Если есть в памяти вернём его
+   * 2. Если есть в сторе вернём его
+   * 3. Иначе выполняем стратегию авторизации
+   */
   async #getAccessToken() {
     if (this.#tokenStoreAccessToken) {
       return this.#tokenStoreAccessToken;
@@ -37,6 +44,7 @@ class Tele2Ats2ClientAuth {
   }
 
   /**
+   * (Этот метод должен быть синхроным)
    * @protected
    */
   runStrategyAuth() {
@@ -51,7 +59,17 @@ class Tele2Ats2ClientAuth {
     return this.#tokenStoreRunnedStrategy;
   }
 
-  /** @returns { Promise<string> } */
+  /**
+   * Страатегия авторизации:
+   * 1. Загрузить refreshToken
+   * 2. Запросить пару из accessToken и refreshToken
+   *    - Если все ок - вернём accessToken
+   *    - Если нет, пробуем получить accessToken из стора (предполагается,
+   *      что кто-то другой изменил токен - например крона, которая запускает
+   *      принудительную авторизацию каждый день)
+   *
+   * @returns { Promise<string> }
+   */
   async #strategyAuth() {
     const { refreshToken } = await this.#tokenStore.loadRefreshToken();
 
@@ -137,6 +155,10 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
+   * Получение списка сотрудников компании
+   *
+   * @see https://ats2-wiki.tele2.ru/open_api/#_7
+   *
    * @returns { Promise<import('../../types').Employee[]> }
    */
   async employees() {
@@ -146,6 +168,10 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
+   * Получение информации о текущих звонках
+   *
+   * @see https://ats2-wiki.tele2.ru/open_api/#_5
+   *
    * @returns { Promise<import('../../types').MonitoringCall[]> }
    */
   async monitoringCalls() {
@@ -155,6 +181,10 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
+   * Получение списка абонентов в очереди
+   *
+   * @see https://ats2-wiki.tele2.ru/open_api/#_6
+   *
    * @returns { Promise<import('../../types').MonitoringCallPending[]> }
    */
   async monitoringCallsPending() {
@@ -164,6 +194,10 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
+   * Сlick 2 call (вызов через АТС)
+   *
+   * @see https://ats2-wiki.tele2.ru/open_api/#lick-2-call
+   *
    * @param { Omit<Parameters<import('../tele2-ats2-api')['click2call']>[0], 'accessToken'> } props
    * @returns { Promise<void> }
    */
@@ -174,6 +208,10 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
+   * Получение списка записей разговоров
+   *
+   * @see https://ats2-wiki.tele2.ru/open_api/#_13
+   *
    * @param { Omit<Parameters<import('../tele2-ats2-api')['callRecordsInfo']>[0], 'accessToken' | 'sort'> & { sort?: { key: 'date' | 'callTimestamp' | 'callType' | 'destinationNumber' | 'callerNumber' | 'callerName' | 'calleeNumber' | 'calleeName' | 'callDuration' | 'callStatus' | 'recordFileName', order: 'asc' | 'desc' } } } props
    * @returns { Promise<import('../../types').FileInfo[]> }
    */
@@ -184,6 +222,10 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   }
 
   /**
+   * Получение файла записи разговора
+   *
+   * @see https://ats2-wiki.tele2.ru/open_api/#_14
+   *
    * @param { Omit<Parameters<import('../tele2-ats2-api')['callRecordsFile']>[0], 'accessToken'> } props
    * @returns { Promise<import('../tele2-ats2-api/file')> }
    */
