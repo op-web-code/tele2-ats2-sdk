@@ -24,12 +24,12 @@ const client = tele2ats2sdk.Tele2Ats2Client({
    */
   tokenStore: new FileTokenStore({
     refreshToken: `eyJhbGciOiJIUzUxMiJ9.eyJVc2VyRGV0YWlsc0ltcGwiOnsiY29tcGFueUlkIjoxNjkxNywidXNlcklkIjozNDI0NCwibG9naW4iOiI3MTYzMzE5NTgwMCJ9LCJzdWIiOiJSRUZSRVNIX09QRU5BUElfVE9LRU4iLCJleHAiOjE3MTg3MzE5MDJ9._zrWnS0Mc0YOO-ImCDxES6hf7GmgICT3M5j63qau-BJgCAuKEVcM7b_3YEdDzj1qeWvRI2x5m9b8JJT1mRcs4w`,
-    proxyStore: new tele2ats2.StaticProxyStore({
-      host: "194.62.184.30",
-      port: +"2717",
-      user: "kin7080",
-      pass: "g801hv",
-    }),
+  }),
+  proxyStore: new tele2ats2.StaticProxyStore({
+    host: "194.62.184.30",
+    port: +"2717",
+    user: "kin7080",
+    pass: "g801hv",
   }),
 });
 
