@@ -1,8 +1,9 @@
-const axios = require("axios");
+const axios = require("axios-https-proxy-fix");
 
 const Exceptions = require("./exceptions");
 const Constants = require("./constants");
 const { decoratorTele2Ats2ApiError } = require("./decorators");
+const { proxyHttpToAxiosProxy } = require("./utils");
 
 const DEFAULTS_DECORATORS = [
   {
@@ -23,6 +24,7 @@ const DEFAULTS_DECORATORS = [
  *
  * @param { object } props
  * @param { string } props.refreshToken
+ * @param { import('../../types').ProxyHttp } [props.proxy]
  * @returns { Promise<{ accessToken: string, refreshToken: string }> }
  */
 const refreshTokens = async (props) => {
@@ -34,6 +36,7 @@ const refreshTokens = async (props) => {
         headers: {
           Authorization: props.refreshToken,
         },
+        proxy: proxyHttpToAxiosProxy(props.proxy),
       }
     ),
     DEFAULTS_DECORATORS
@@ -48,6 +51,7 @@ const refreshTokens = async (props) => {
  *
  * @param { object } props
  * @param { string } props.accessToken
+ * @param { import('../../types').ProxyHttp } [props.proxy]
  * @returns { Promise<Record<string, any>> }
  */
 const monitoringCalls = async (props) => {
@@ -56,6 +60,7 @@ const monitoringCalls = async (props) => {
       headers: {
         Authorization: props.accessToken,
       },
+      proxy: proxyHttpToAxiosProxy(props.proxy),
     }),
     DEFAULTS_DECORATORS
   );
@@ -69,6 +74,7 @@ const monitoringCalls = async (props) => {
  *
  * @param { object } props
  * @param { string } props.accessToken
+ * @param { import('../../types').ProxyHttp } [props.proxy]
  * @returns { Promise<Record<string, any>> }
  */
 const monitoringCallsPending = async (props) => {
@@ -77,6 +83,7 @@ const monitoringCallsPending = async (props) => {
       headers: {
         Authorization: props.accessToken,
       },
+      proxy: proxyHttpToAxiosProxy(props.proxy),
     }),
     DEFAULTS_DECORATORS
   );
@@ -90,6 +97,7 @@ const monitoringCallsPending = async (props) => {
  *
  * @param { object } props
  * @param { string } props.accessToken
+ * @param { import('../../types').ProxyHttp } [props.proxy]
  * @returns { Promise<Record<string, any>> }
  */
 const employees = async (props) => {
@@ -98,6 +106,7 @@ const employees = async (props) => {
       headers: {
         Authorization: props.accessToken,
       },
+      proxy: proxyHttpToAxiosProxy(props.proxy),
     }),
     DEFAULTS_DECORATORS
   );
@@ -111,6 +120,7 @@ const employees = async (props) => {
  *
  * @param { object } props
  * @param { string } props.accessToken
+ * @param { import('../../types').ProxyHttp } [props.proxy]
  * @param { string } props.employeePhone
  * @param { string } props.clientPhone
  * @returns { Promise<void> }
@@ -125,6 +135,7 @@ const click2call = async (props) => {
       headers: {
         Authorization: props.accessToken,
       },
+      proxy: proxyHttpToAxiosProxy(props.proxy),
     }),
     [
       ...DEFAULTS_DECORATORS,

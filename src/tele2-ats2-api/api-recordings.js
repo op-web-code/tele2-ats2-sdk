@@ -1,9 +1,10 @@
-const axios = require("axios");
+const axios = require("axios-https-proxy-fix");
 
 const Tele2Ats2File = require("./file");
 const Exceptions = require("./exceptions");
 const Constants = require("./constants");
 const { decoratorTele2Ats2ApiError } = require("./decorators");
+const { proxyHttpToAxiosProxy } = require("./utils");
 
 const DEFAULTS_DECORATORS = [
   {
@@ -24,6 +25,7 @@ const DEFAULTS_DECORATORS = [
  *
  * @param { object } props
  * @param { string } props.accessToken
+ * @param { import('../../types').ProxyHttp } [props.proxy]
  * @param { Date } props.dateFrom
  * @param { Date } props.dateTo
  * @param { number } [props.page]
@@ -70,6 +72,7 @@ const callRecordsInfo = async (props) => {
       headers: {
         Authorization: props.accessToken,
       },
+      proxy: proxyHttpToAxiosProxy(props.proxy),
     }),
     DEFAULTS_DECORATORS
   );
@@ -97,6 +100,7 @@ const callRecordsInfo = async (props) => {
  *
  * @param { object } props
  * @param { string } props.accessToken
+ * @param { import('../../types').ProxyHttp } [props.proxy]
  * @param { string } props.recordFileName
  */
 const callRecordsFile = async (props) => {
@@ -109,11 +113,12 @@ const callRecordsFile = async (props) => {
         Authorization: props.accessToken,
         "Content-Type": "audio/mpeg",
       },
+      proxy: proxyHttpToAxiosProxy(props.proxy),
       responseType: "stream",
     }),
     DEFAULTS_DECORATORS
   );
-  return new Tele2Ats2File(res.data);
+  return new Tele2Ats2File(props.recordFileName, res.data);
 };
 
 module.exports = {

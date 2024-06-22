@@ -1,5 +1,8 @@
-const axios = require("axios");
 const Exceptions = require("./exceptions");
+
+const isAxiosError = (error) => {
+  return error instanceof Error && "response" in error;
+};
 
 /**
  * @template T
@@ -14,7 +17,7 @@ const decoratorTele2Ats2ApiError = async (axiosPromise, handlers) => {
     if (error instanceof Exceptions.Tele2Ats2ApiError) {
       throw error;
     }
-    if (!axios.isAxiosError(error)) {
+    if (!isAxiosError(error)) {
       throw new Exceptions.Tele2Ats2ApiError(
         error?.message ?? error + "" ?? "unknown error"
       );

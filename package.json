@@ -1,6 +1,6 @@
 {
   "name": "@op-web-code/tele2-ats2-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "index.js",
   "types": "index.d.ts",
   "keywords": [],
@@ -11,7 +11,7 @@
     "npm:publish": "npm run gen-types && npm publish --access=public"
   },
   "dependencies": {
-    "axios": "^1.7.2"
+    "axios-https-proxy-fix": "^0.17.1"
   },
   "repository": {
     "type": "git",

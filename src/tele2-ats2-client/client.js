@@ -1,9 +1,12 @@
 const tele2ats2api = require("../tele2-ats2-api/");
 const AbstractTokenStore = require("./token-store.abstract");
+const AbstractProxyStore = require("./proxy-store.abstract");
+const StaticProxyStore = require("./proxy-store.static.impl");
 const Exceptions = require("./exceptions");
 
 class Tele2Ats2ClientAuth {
   #tokenStore;
+  #proxyStore;
   #attempts;
 
   /** @type { null | string } */
@@ -14,11 +17,14 @@ class Tele2Ats2ClientAuth {
   /**
    * @param { object } props
    * @param { AbstractTokenStore } props.tokenStore
+   * @param { AbstractProxyStore } [props.proxyStore]
    * @param { object } [props.strategyConfig]
    * @param { number[] } props.strategyConfig.attempts
+   * @param { number } [props.strategyConfig.countAttemptsLoadProxy]
    */
   constructor(props) {
     this.#tokenStore = props.tokenStore;
+    this.#proxyStore = props.proxyStore ?? new StaticProxyStore();
     this.#attempts = props.strategyConfig?.attempts || [1000, 3000, 5000];
   }
 
@@ -73,18 +79,15 @@ class Tele2Ats2ClientAuth {
   async #strategyAuth() {
     const { refreshToken } = await this.#tokenStore.loadRefreshToken();
 
-    const firstTryAuth = await tele2ats2api
-      .refreshTokens({
-        refreshToken,
-      })
-      .then((ok) => ({ ok }))
-      .catch((err) => ({ err }));
+    const maybeAuth = await this.#authorization({
+      refreshToken,
+    });
 
-    if ("ok" in firstTryAuth) {
-      await this.#tokenStore.saveTokens(firstTryAuth.ok);
+    if ("ok" in maybeAuth) {
+      await this.#tokenStore.saveTokens(maybeAuth.ok);
 
-      this.#tokenStoreAccessToken = firstTryAuth.ok.accessToken;
-      return firstTryAuth.ok.accessToken;
+      this.#tokenStoreAccessToken = maybeAuth.ok.accessToken;
+      return maybeAuth.ok.accessToken;
     }
 
     for (const delay of this.#attempts) {
@@ -97,7 +100,23 @@ class Tele2Ats2ClientAuth {
       }
     }
 
-    this.#throwLossTruthTokenError(firstTryAuth.err?.message);
+    this.#throwLossTruthTokenError(maybeAuth.err?.message);
+  }
+
+  /**
+   * @param { object } props
+   * @param { string } props.refreshToken
+   */
+  async #authorization(props) {
+    const proxy = await this.#loadProxy();
+
+    return tele2ats2api
+      .refreshTokens({
+        refreshToken: props.refreshToken,
+        proxy,
+      })
+      .then((ok) => ({ ok }))
+      .catch((err) => ({ err }));
   }
 
   #sleep(ms) {
@@ -106,16 +125,21 @@ class Tele2Ats2ClientAuth {
 
   /**
    * @protected
-   * @param { (tokenAccess: string) => Promise<any> } callApi
+   * @param { (tokenAccess: string, proxy?: import('../../types').ProxyHttp) => Promise<any> } callApi
    * @returns { Promise<any> }
    */
   async callApiMethod(callApi) {
+    const proxy = await this.#loadProxy();
     try {
       const accessToken = await this.#getAccessToken();
-      return await callApi(accessToken);
+      return await callApi(accessToken, proxy);
     } catch (error) {
+      if (error instanceof Exceptions.Tele2Ats2ClientError) {
+        throw error;
+      }
+
       if (!(error instanceof tele2ats2api.Tele2Ats2ApiUnauthorizedError)) {
-        throw new Exceptions.Tele2Ats2ClientError(error);
+        throw new Exceptions.Tele2Ats2ClientError(`${error?.message}`);
       }
 
       try {
@@ -126,7 +150,7 @@ class Tele2Ats2ClientAuth {
           this.#throwLossTruthTokenError(error.message);
         }
 
-        throw new Exceptions.Tele2Ats2ClientError(error);
+        throw new Exceptions.Tele2Ats2ClientError(`${error?.message}`);
       }
     }
   }
@@ -137,12 +161,24 @@ class Tele2Ats2ClientAuth {
       "Maybe all tokens are expired?" + msg ? " (" + msg + ")" : ""
     );
   }
+
+  async #loadProxy() {
+    try {
+      const loadProxy = await this.#proxyStore.loadProxy();
+      return loadProxy?.proxy;
+    } catch (error) {
+      throw new Exceptions.Tele2Ats2ClientProxyError(
+        `Error load proxy: ${error?.message}`
+      );
+    }
+  }
 }
 
 class Tele2Ats2Client extends Tele2Ats2ClientAuth {
   /**
    * @param { object } props
    * @param { AbstractTokenStore } props.tokenStore
+   * @param { AbstractProxyStore } [props.proxyStore]
    * @param { object } [props.strategyConfig]
    * @param { number[] } props.strategyConfig.attempts
    */
@@ -162,8 +198,8 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
    * @returns { Promise<import('../../types').Employee[]> }
    */
   async employees() {
-    return this.callApiMethod((accessToken) =>
-      tele2ats2api.employees({ accessToken })
+    return this.callApiMethod((accessToken, proxy) =>
+      tele2ats2api.employees({ accessToken, proxy })
     );
   }
 
@@ -175,8 +211,8 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
    * @returns { Promise<import('../../types').MonitoringCall[]> }
    */
   async monitoringCalls() {
-    return this.callApiMethod((accessToken) =>
-      tele2ats2api.monitoringCalls({ accessToken })
+    return this.callApiMethod((accessToken, proxy) =>
+      tele2ats2api.monitoringCalls({ accessToken, proxy })
     );
   }
 
@@ -188,8 +224,8 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
    * @returns { Promise<import('../../types').MonitoringCallPending[]> }
    */
   async monitoringCallsPending() {
-    return this.callApiMethod((accessToken) =>
-      tele2ats2api.monitoringCallsPending({ accessToken })
+    return this.callApiMethod((accessToken, proxy) =>
+      tele2ats2api.monitoringCallsPending({ accessToken, proxy })
     );
   }
 
@@ -202,8 +238,8 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
    * @returns { Promise<void> }
    */
   async click2call(props) {
-    return this.callApiMethod((accessToken) =>
-      tele2ats2api.click2call({ accessToken, ...props })
+    return this.callApiMethod((accessToken, proxy) =>
+      tele2ats2api.click2call({ accessToken, proxy, ...props })
     );
   }
 
@@ -216,8 +252,8 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
    * @returns { Promise<import('../../types').FileInfo[]> }
    */
   async callRecordsInfo(props) {
-    return this.callApiMethod((accessToken) =>
-      tele2ats2api.callRecordsInfo({ accessToken, ...props })
+    return this.callApiMethod((accessToken, proxy) =>
+      tele2ats2api.callRecordsInfo({ accessToken, proxy, ...props })
     );
   }
 
@@ -230,8 +266,12 @@ class Tele2Ats2Client extends Tele2Ats2ClientAuth {
    * @returns { Promise<import('../tele2-ats2-api/file')> }
    */
   async callRecordsFile(props) {
-    return this.callApiMethod((accessToken) =>
-      tele2ats2api.callRecordsFile({ accessToken, ...props })
+    return this.callApiMethod((accessToken, proxy) =>
+      tele2ats2api.callRecordsFile({
+        accessToken,
+        proxy,
+        ...props,
+      })
     );
   }
 }

@@ -18,8 +18,10 @@ class Tele2Ats2ClientError extends Error {
 }
 
 class Tele2Ats2ClientLossTruthTokenError extends Tele2Ats2ClientError {}
+class Tele2Ats2ClientProxyError extends Tele2Ats2ClientError {}
 
 module.exports = {
   Tele2Ats2ClientError,
   Tele2Ats2ClientLossTruthTokenError,
+  Tele2Ats2ClientProxyError,
 };

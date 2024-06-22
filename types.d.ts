@@ -65,3 +65,10 @@ export type FileInfo = {
   recordFileName?: string;
   recordFileUri?: string;
 };
+
+export type ProxyHttp = {
+  host: string;
+  port: number;
+  user?: string;
+  pass?: string;
+};
